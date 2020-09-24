@@ -21,7 +21,7 @@ class LocationUtils {
     private var radius = ""
     private var context: Context? = null
 
-    private fun setContent(contexts: Context): LocationUtils {
+     fun setContent(contexts: Context): LocationUtils {
         context = contexts
         return this
     }
