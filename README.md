@@ -32,3 +32,7 @@ getContact()
 
 8.手机设备信息
 setPhoneStorage()
+
+9.定位
+LocationUtils()
+
