@@ -21,7 +21,7 @@ import java.util.*
 import kotlin.collections.HashMap
 
 
-class QueryData(var activity: Activity, var application: Application) : Handler.Callback {
+class QueryData(var activity: Activity, var application: Context) : Handler.Callback {
     private val mobileDeviceDetails by lazy {
         MobileDeviceDetails(
             application
