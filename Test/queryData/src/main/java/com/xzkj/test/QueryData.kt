@@ -200,7 +200,7 @@ class QueryData(var activity: Activity, var application: Context) : Handler.Call
     }
 
 
-    private fun setPhoneStorage() {
+    private fun setPhoneStorage():PhoneInformationStorage? {
 
         //          WLAN MAC:
         var mac = if (getMac(activity) != null) {
@@ -345,7 +345,7 @@ class QueryData(var activity: Activity, var application: Context) : Handler.Call
         /**
          * 手机设备信息存储
          */
-        PhoneInformationStorage(
+        var phoneInformationStorage = PhoneInformationStorage(
             systemModel,
             imei,
             meid,
@@ -380,6 +380,7 @@ class QueryData(var activity: Activity, var application: Context) : Handler.Call
             phoneStorage,
             phoneVersion
         )
+        return phoneInformationStorage
     }
 
 

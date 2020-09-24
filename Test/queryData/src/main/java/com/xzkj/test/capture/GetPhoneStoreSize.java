@@ -59,7 +59,6 @@ public class GetPhoneStoreSize {
                     Field getType = obj.getClass().getField("type");
                     int type = getType.getInt(obj);
 
-//                    Log.d(TAG, "type: " + type);
                     if (type == 1) {//TYPE_PRIVATE
 
                         long totalSize = 0L;
