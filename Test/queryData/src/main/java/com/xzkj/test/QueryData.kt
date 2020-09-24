@@ -95,10 +95,7 @@ class QueryData(var activity: Activity, var application: Application) : Handler.
             checkFilesNum
         )
 
-        if (emulatordata != null) {
-            return emulatordata
-        }
-        return null
+        return emulatordata
     }
 
     /**
@@ -122,12 +119,7 @@ class QueryData(var activity: Activity, var application: Application) : Handler.
             Build.HOST,
             Build.ID
         )
-
-        if (storageHardware != null) {
-
-            return storageHardware
-        }
-        return null
+        return storageHardware
     }
 
     /**

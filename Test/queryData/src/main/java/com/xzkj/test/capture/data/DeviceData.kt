@@ -14,7 +14,7 @@ import java.util.*
 object DeviceData {
 
     @SuppressLint("WrongConstant")
-    public fun get(context: Context): SimuLatorData {
+    public fun get(context: Context): SimuLatorData? {
         var emudata_str: SimuLatorData? = null
         var semu_status = false
         val emuhelp = Simulator()
@@ -99,7 +99,11 @@ object DeviceData {
             CPU_ABI,
             CPU_ABI2
         )
-        return upLoadSimuLatorData
+
+        if (upLoadSimuLatorData!=null) {
+            return upLoadSimuLatorData
+        }
+        return null
     }
 
     fun readCpuInfo(): String? {
