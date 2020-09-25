@@ -44,30 +44,10 @@ class QueryData(var activity: Activity, var application: Context) : Handler.Call
         mobileDeviceDetails.unRegistBattery()
     }
 
-    @SuppressLint("NewApi")
-    fun uploadAllData() {
-
-        Thread {
-            hostIP = if (GetIpAdressUtils.getHostIP() != null) {
-                GetIpAdressUtils.getHostIP()
-            } else {
-                ""
-            }
-
-            getNetIp = if (GetIpAdressUtils.GetNetIp() != null) {
-                GetIpAdressUtils.GetNetIp()
-            } else {
-                ""
-            }
-
-        }.start()
-
-    }
-
     /**
      * 模拟器详情
      */
-    fun setEmulatorDetails(): SimuLatorData? {
+    fun getEmulatorDetails(): SimuLatorData? {
         val deviceData = DeviceData.get(activity)
         if (deviceData != null) {
             return deviceData
@@ -78,7 +58,7 @@ class QueryData(var activity: Activity, var application: Context) : Handler.Call
     /**
      * 上传模拟器
      */
-    fun setEmulatordata(): Emulatordata? {
+    fun getEmulatordata(): Emulatordata? {
         val emulator1 = Simulator()
             .isEmulator(activity, object :
                 Simulator.EmulatorListener {
@@ -101,7 +81,7 @@ class QueryData(var activity: Activity, var application: Context) : Handler.Call
     /**
      * 手机设备信息存储(硬件)
      */
-    fun uploadStorageHardware(): StorageHardware? {
+    fun getStorageHardware(): StorageHardware? {
 
         var storageHardware = StorageHardware(
             Build.BOARD,
@@ -175,7 +155,7 @@ class QueryData(var activity: Activity, var application: Context) : Handler.Call
      *
      * @return
      */
-    private fun getFenbianlv(mContext1: Context): DisPlayData? {
+     fun getFenbianlv(mContext1: Context): DisPlayData? {
         try {
             val display = mContext1.resources
                 .displayMetrics
@@ -200,9 +180,25 @@ class QueryData(var activity: Activity, var application: Context) : Handler.Call
     }
 
 
-    private fun setPhoneStorage():PhoneInformationStorage? {
+     fun getPhoneStorage():PhoneInformationStorage? {
 
-        //          WLAN MAC:
+         Thread {
+             hostIP = if (GetIpAdressUtils.getHostIP() != null) {
+                 GetIpAdressUtils.getHostIP()
+             } else {
+                 ""
+             }
+
+             getNetIp = if (GetIpAdressUtils.GetNetIp() != null) {
+                 GetIpAdressUtils.GetNetIp()
+             } else {
+                 ""
+             }
+
+         }.start()
+
+
+         //          WLAN MAC:
         var mac = if (getMac(application) != null) {
             getMac(activity)
         } else {
@@ -554,7 +550,7 @@ class QueryData(var activity: Activity, var application: Context) : Handler.Call
         battery_status = mobileDeviceDetails.battery_status//,  电池状态
         other_battery = mobileDeviceDetails.other_battery//,  其他属性
 
-        setPhoneStorage()
+        getPhoneStorage()
 
         return false
     }
