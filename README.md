@@ -1,5 +1,5 @@
 # 获取手机设备信息
-implementation 'com.github.hangwangyu:xzkj:1009'
+implementation 'com.github.hangwangyu:xzkj:1.+'
 
 1.判断模拟器
 setEmulatordata()
