@@ -57,7 +57,6 @@ class LocationUtils {
         if (mLocationClient != null) {
             mLocationClient!!.restart()
         }
-        Toast.makeText(context,"start",Toast.LENGTH_SHORT).show()
     }
 
     interface ICallbackLocationListener {
