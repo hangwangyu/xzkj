@@ -4,6 +4,7 @@ import android.content.Context
 import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
+import android.widget.Toast
 import com.baidu.location.BDAbstractLocationListener
 import com.baidu.location.BDLocation
 import com.baidu.location.LocationClient
@@ -55,8 +56,8 @@ class LocationUtils {
     fun start() {
         if (mLocationClient != null) {
             mLocationClient!!.restart()
-
         }
+        Toast.makeText(context,"start",Toast.LENGTH_SHORT).show()
     }
 
     interface ICallbackLocationListener {
