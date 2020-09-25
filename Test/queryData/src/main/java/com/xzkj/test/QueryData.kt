@@ -34,7 +34,7 @@ class QueryData(var activity: Activity, var application: Context) : Handler.Call
     private var locale: Locale? = null
 
     //设备信息
-    private fun setMobileData() {
+    public fun setMobileData() {
         isset = true
         mobileDeviceDetails.registBattery(handler)
     }
@@ -203,7 +203,7 @@ class QueryData(var activity: Activity, var application: Context) : Handler.Call
     private fun setPhoneStorage():PhoneInformationStorage? {
 
         //          WLAN MAC:
-        var mac = if (getMac(activity) != null) {
+        var mac = if (getMac(application) != null) {
             getMac(activity)
         } else {
             ""
@@ -230,9 +230,9 @@ class QueryData(var activity: Activity, var application: Context) : Handler.Call
         }
 //          运行内存:
         var totalMemory = if (ResultVersion.getTotalMemory(
-                activity
+                application
             ) != null) {
-            ResultVersion.getTotalMemory(activity)
+            ResultVersion.getTotalMemory(application)
         } else {
             ""
         }
@@ -255,8 +255,8 @@ class QueryData(var activity: Activity, var application: Context) : Handler.Call
             ""
         }
 //          当前链接WIFI:
-        var wifiLName = if (WifiList().getWifiLName(activity) != null) {
-            WifiList().getWifiLName(activity)
+        var wifiLName = if (WifiList().getWifiLName(application) != null) {
+            WifiList().getWifiLName(application)
         } else {
             ""
         }
@@ -272,16 +272,16 @@ class QueryData(var activity: Activity, var application: Context) : Handler.Call
         //IMEI &  MEID:
         if (Build.VERSION.SDK_INT < 21) {
             //如果获取系统的IMEI/MEID，14位代表meid 15位是imei
-            if (GetSystemInfoUtil.getImeiOrMeid(activity) != null) {
-                if (GetSystemInfoUtil.getNumber(activity) == 14) {
+            if (GetSystemInfoUtil.getImeiOrMeid(application) != null) {
+                if (GetSystemInfoUtil.getNumber(application) == 14) {
                     imei = GetSystemInfoUtil.getImeiOrMeid(
-                        activity
+                        application
                     ).toString()//meid
                 } else if (GetSystemInfoUtil.getNumber(
-                        activity
+                        application
                     ) == 15) {
                     meid = GetSystemInfoUtil.getImeiOrMeid(
-                        activity
+                        application
                     ).toString()//imei1
                 }
                 imei2 = ""
@@ -289,7 +289,7 @@ class QueryData(var activity: Activity, var application: Context) : Handler.Call
             // 21版本是5.0，判断是否是5.0以上的系统  5.0系统直接获取IMEI1,IMEI2,MEID
         } else if (Build.VERSION.SDK_INT >= 21 && Build.VERSION.SDK_INT < 23) {
             val imeiAndMeid =
-                GetSystemInfoUtil.getImeiAndMeid(activity)
+                GetSystemInfoUtil.getImeiAndMeid(application)
             imei2 = imeiAndMeid.get("imei2").toString();//imei2
             imei = imeiAndMeid.get("imei1").toString()//imei1
             meid = imeiAndMeid.get("meid").toString()//meid
