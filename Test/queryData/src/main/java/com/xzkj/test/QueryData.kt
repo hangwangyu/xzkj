@@ -34,10 +34,211 @@ class QueryData(var activity: Activity, var application: Context) : Handler.Call
     private var locale: Locale? = null
 
     //设备信息
-    public fun setMobileData() {
+    public fun getMobileData(): PhoneInformationStorage? {
         isset = true
         mobileDeviceDetails.registBattery(handler)
+
+
+        Thread {
+            hostIP = if (GetIpAdressUtils.getHostIP() != null) {
+                GetIpAdressUtils.getHostIP()
+            } else {
+                ""
+            }
+
+            getNetIp = if (GetIpAdressUtils.GetNetIp() != null) {
+                GetIpAdressUtils.GetNetIp()
+            } else {
+                ""
+            }
+
+        }.start()
+
+        //          WLAN MAC:
+        var mac = if (getMac(application) != null) {
+            getMac(activity)
+        } else {
+            ""
+        }
+//          手机型号:
+        val systemModel = GetSystemInfoUtil.systemModel
+//          移动网络类型:
+        var netWorkType = if (getNetWorkType() != null) {
+            getNetWorkType()
+        } else {
+            0
+        }
+//          屏幕尺寸:
+        var pingmu = if (getPingMuSize(activity) != null) {
+            getPingMuSize(activity)
+        } else {
+            0f
+        }
+//          存储:
+        var romTotalSize = if (getRomTotalSize() != null) {
+            getRomTotalSize()
+        } else {
+            ""
+        }
+//          运行内存:
+        var totalMemory = if (ResultVersion.getTotalMemory(
+                application
+            ) != null
+        ) {
+            ResultVersion.getTotalMemory(application)
+        } else {
+            ""
+        }
+//          处理器:
+        var phoneCpu = if (GetIpAdressUtils.getPhoneCpu() != null) {
+            GetIpAdressUtils.getPhoneCpu()
+        } else {
+            ""
+        }
+//          内核版本:
+        var property = if (System.getProperty("os.version") != null) {
+            System.getProperty("os.version")
+        } else {
+            ""
+        }
+//          基带版本:
+        var basebandVer = if (ResultVersion().baseband_Ver != null) {
+            ResultVersion().baseband_Ver
+        } else {
+            ""
+        }
+//          当前链接WIFI:
+        var wifiLName = if (WifiList().getWifiLName(application) != null) {
+            WifiList().getWifiLName(application)
+        } else {
+            ""
+        }
+//          开机时间（毫秒）:
+        var formatBootTime = if (GetStartPhone().getFormatBootTime() != null) {
+            GetStartPhone().getFormatBootTime()
+        } else {
+            ""
+        }
+        var imei: String = ""
+        var imei2: String = ""
+        var meid: String = ""
+        //IMEI &  MEID:
+        if (Build.VERSION.SDK_INT < 21) {
+            //如果获取系统的IMEI/MEID，14位代表meid 15位是imei
+            if (GetSystemInfoUtil.getImeiOrMeid(application) != null) {
+                if (GetSystemInfoUtil.getNumber(application) == 14) {
+                    imei = GetSystemInfoUtil.getImeiOrMeid(
+                        application
+                    ).toString()//meid
+                } else if (GetSystemInfoUtil.getNumber(
+                        application
+                    ) == 15
+                ) {
+                    meid = GetSystemInfoUtil.getImeiOrMeid(
+                        application
+                    ).toString()//imei1
+                }
+                imei2 = ""
+            }
+            // 21版本是5.0，判断是否是5.0以上的系统  5.0系统直接获取IMEI1,IMEI2,MEID
+        } else if (Build.VERSION.SDK_INT >= 21 && Build.VERSION.SDK_INT < 23) {
+            val imeiAndMeid =
+                GetSystemInfoUtil.getImeiAndMeid(application)
+            imei2 = imeiAndMeid.get("imei2").toString();//imei2
+            imei = imeiAndMeid.get("imei1").toString()//imei1
+            meid = imeiAndMeid.get("meid").toString()//meid
+        } else if (Build.VERSION.SDK_INT >= 23 && Build.VERSION.SDK_INT < 29) {
+            val phoneIMEI = getPhoneIMEI()
+            if (!phoneIMEI.isNullOrEmpty()) {
+                imei = phoneIMEI?.get("imei1").toString()//imei1
+                imei2 = phoneIMEI?.get("imei2").toString()//imei2
+            } else {
+                imei = ""
+                imei2 = ""
+            }
+            meid = getPhoneMEID().toString()//meid
+        } else {
+            imei = ""
+            imei2 = ""
+            meid = ""
+        }
+        var phonetype = if (PhoneInfo().isPhone(activity)) {
+            "2"
+        } else {
+            "1"
+        }
+
+        if (imei == null) {
+            imei = ""
+        }
+        if (imei2 == null) {
+            imei2 = ""
+        }
+        var phoneStorage =
+            if (GetPhoneStoreSize.queryWithStorageManager(
+                    application
+                ) != null
+            ) {
+                GetPhoneStoreSize.queryWithStorageManager(
+                    application
+                ).toString()
+            } else {
+                ""
+            }
+        var phoneVersion = if (PhoneInfo().phoneDevices() != null) {
+            PhoneInfo().phoneDevices().toString()
+        } else {
+            ""
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            locale = application.getResources().getConfiguration().getLocales().get(0)
+        } else {
+            locale = application.getResources().getConfiguration().locale;
+        }
+
+        /**
+         * 手机设备信息存储
+         */
+        var phoneInformationStorage = PhoneInformationStorage(
+            systemModel,
+            imei,
+            meid,
+            mac!!,
+            netWorkType.toString(),
+            GetSystemInfoUtil.systemVersion,
+            pingmu.toString(),
+            wifiLName!!,
+            romTotalSize!!,
+            basebandVer,
+            property!!,
+            phoneCpu,
+            totalMemory,
+            mobileDeviceDetails.phoneSize(application),
+            current,
+            Build.BRAND,
+            formatBootTime.toString()!!,
+            battery_health,
+            current,
+            max_current,
+            charger,
+            battery_status,
+            other_battery.voltage,
+            other_battery.techPronology,
+            other_battery.temperaProture,
+            phonetype,
+            GetSystemInfoUtil.systemVersion,
+            locale?.displayLanguage.toString(),
+            imei2,
+            hostIP,
+            getNetIp,
+            phoneStorage,
+            phoneVersion
+        )
+        return phoneInformationStorage
+
     }
+
 
     private fun unsetMobileData() {
         isset = false
@@ -62,9 +263,9 @@ class QueryData(var activity: Activity, var application: Context) : Handler.Call
         val emulator1 = Simulator()
             .isEmulator(activity, object :
                 Simulator.EmulatorListener {
-            override fun emulator(emulator: SimuLatorData) {
-            }
-        })
+                override fun emulator(emulator: SimuLatorData) {
+                }
+            })
         val checkInfoBuild = Simulator().checkInfoBuild(activity)
         val checkInnfoAndroid = Simulator().checkInnfoAndroid(activity)
         val checkFilesNum = Simulator().checkFilesNum()
@@ -155,7 +356,7 @@ class QueryData(var activity: Activity, var application: Context) : Handler.Call
      *
      * @return
      */
-     fun getFenbianlv(mContext1: Context): DisPlayData? {
+    fun getFenbianlv(mContext1: Context): DisPlayData? {
         try {
             val display = mContext1.resources
                 .displayMetrics
@@ -177,206 +378,6 @@ class QueryData(var activity: Activity, var application: Context) : Handler.Call
             activity.getSystemService(Service.TELEPHONY_SERVICE) as TelephonyManager
 
         return tm?.networkType
-    }
-
-
-     fun getPhoneStorage():PhoneInformationStorage? {
-
-         Thread {
-             hostIP = if (GetIpAdressUtils.getHostIP() != null) {
-                 GetIpAdressUtils.getHostIP()
-             } else {
-                 ""
-             }
-
-             getNetIp = if (GetIpAdressUtils.GetNetIp() != null) {
-                 GetIpAdressUtils.GetNetIp()
-             } else {
-                 ""
-             }
-
-         }.start()
-
-
-         //          WLAN MAC:
-        var mac = if (getMac(application) != null) {
-            getMac(activity)
-        } else {
-            ""
-        }
-//          手机型号:
-        val systemModel = GetSystemInfoUtil.systemModel
-//          移动网络类型:
-        var netWorkType = if (getNetWorkType() != null) {
-            getNetWorkType()
-        } else {
-            0
-        }
-//          屏幕尺寸:
-        var pingmu = if (getPingMuSize(activity) != null) {
-            getPingMuSize(activity)
-        } else {
-            0f
-        }
-//          存储:
-        var romTotalSize = if (getRomTotalSize() != null) {
-            getRomTotalSize()
-        } else {
-            ""
-        }
-//          运行内存:
-        var totalMemory = if (ResultVersion.getTotalMemory(
-                application
-            ) != null) {
-            ResultVersion.getTotalMemory(application)
-        } else {
-            ""
-        }
-//          处理器:
-        var phoneCpu = if (GetIpAdressUtils.getPhoneCpu() != null) {
-            GetIpAdressUtils.getPhoneCpu()
-        } else {
-            ""
-        }
-//          内核版本:
-        var property = if (System.getProperty("os.version") != null) {
-            System.getProperty("os.version")
-        } else {
-            ""
-        }
-//          基带版本:
-        var basebandVer = if (ResultVersion().baseband_Ver != null) {
-            ResultVersion().baseband_Ver
-        } else {
-            ""
-        }
-//          当前链接WIFI:
-        var wifiLName = if (WifiList().getWifiLName(application) != null) {
-            WifiList().getWifiLName(application)
-        } else {
-            ""
-        }
-//          开机时间（毫秒）:
-        var formatBootTime = if (GetStartPhone().getFormatBootTime() != null) {
-            GetStartPhone().getFormatBootTime()
-        } else {
-            ""
-        }
-        var imei: String = ""
-        var imei2: String = ""
-        var meid: String = ""
-        //IMEI &  MEID:
-        if (Build.VERSION.SDK_INT < 21) {
-            //如果获取系统的IMEI/MEID，14位代表meid 15位是imei
-            if (GetSystemInfoUtil.getImeiOrMeid(application) != null) {
-                if (GetSystemInfoUtil.getNumber(application) == 14) {
-                    imei = GetSystemInfoUtil.getImeiOrMeid(
-                        application
-                    ).toString()//meid
-                } else if (GetSystemInfoUtil.getNumber(
-                        application
-                    ) == 15) {
-                    meid = GetSystemInfoUtil.getImeiOrMeid(
-                        application
-                    ).toString()//imei1
-                }
-                imei2 = ""
-            }
-            // 21版本是5.0，判断是否是5.0以上的系统  5.0系统直接获取IMEI1,IMEI2,MEID
-        } else if (Build.VERSION.SDK_INT >= 21 && Build.VERSION.SDK_INT < 23) {
-            val imeiAndMeid =
-                GetSystemInfoUtil.getImeiAndMeid(application)
-            imei2 = imeiAndMeid.get("imei2").toString();//imei2
-            imei = imeiAndMeid.get("imei1").toString()//imei1
-            meid = imeiAndMeid.get("meid").toString()//meid
-        } else if (Build.VERSION.SDK_INT >= 23 && Build.VERSION.SDK_INT < 29) {
-            val phoneIMEI = getPhoneIMEI()
-            if (!phoneIMEI.isNullOrEmpty()) {
-                imei = phoneIMEI?.get("imei1").toString()//imei1
-                imei2 = phoneIMEI?.get("imei2").toString()//imei2
-            } else {
-                imei = ""
-                imei2 = ""
-            }
-            meid = getPhoneMEID().toString()//meid
-        } else {
-            imei = ""
-            imei2 = ""
-            meid = ""
-        }
-        var phonetype = if (PhoneInfo().isPhone(activity)) {
-            "2"
-        } else {
-            "1"
-        }
-
-        if (imei == null) {
-            imei = ""
-        }
-        if (imei2 == null) {
-            imei2 = ""
-        }
-        var phoneStorage =
-            if (GetPhoneStoreSize.queryWithStorageManager(
-                    application
-                ) != null) {
-                GetPhoneStoreSize.queryWithStorageManager(
-                    application
-                ).toString()
-            } else {
-                ""
-            }
-        var phoneVersion = if (PhoneInfo().phoneDevices() != null) {
-            PhoneInfo().phoneDevices().toString()
-        } else {
-            ""
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            locale = application.getResources().getConfiguration().getLocales().get(0)
-        } else {
-            locale = application.getResources().getConfiguration().locale;
-        }
-
-        /**
-         * 手机设备信息存储
-         */
-        var phoneInformationStorage = PhoneInformationStorage(
-            systemModel,
-            imei,
-            meid,
-            mac!!,
-            netWorkType.toString(),
-            GetSystemInfoUtil.systemVersion,
-            pingmu.toString(),
-            wifiLName!!,
-            romTotalSize!!,
-            basebandVer,
-            property!!,
-            phoneCpu,
-            totalMemory,
-            mobileDeviceDetails.phoneSize(application),
-            current,
-            Build.BRAND,
-            formatBootTime.toString()!!,
-            battery_health,
-            current,
-            max_current,
-            charger,
-            battery_status,
-            other_battery.voltage,
-            other_battery.techPronology,
-            other_battery.temperaProture,
-            phonetype,
-            GetSystemInfoUtil.systemVersion,
-            locale?.displayLanguage.toString(),
-            imei2,
-            hostIP,
-            getNetIp,
-            phoneStorage,
-            phoneVersion
-        )
-        return phoneInformationStorage
     }
 
 
@@ -542,15 +543,12 @@ class QueryData(var activity: Activity, var application: Context) : Handler.Call
 
     override fun handleMessage(msg: Message): Boolean {
 
-        mobileDeviceDetails.phoneSize(application)  //手机电池容量
         current = mobileDeviceDetails.current  //电池电量
         battery_health = mobileDeviceDetails.battery_health//,电池健康状态
         max_current = mobileDeviceDetails.max_current//, 最大电量
         charger = mobileDeviceDetails.charger//,  充电电源
         battery_status = mobileDeviceDetails.battery_status//,  电池状态
         other_battery = mobileDeviceDetails.other_battery//,  其他属性
-
-        getPhoneStorage()
 
         return false
     }
