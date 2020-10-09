@@ -360,7 +360,13 @@ class QueryData(var activity: Activity, var application: Context) : Handler.Call
 
 
     override fun handleMessage(msg: Message): Boolean {
-
+        
+        current = mobileDeviceDetails.current  //电池电量
+        battery_health = mobileDeviceDetails.battery_health//,电池健康状态
+        max_current = mobileDeviceDetails.max_current//, 最大电量
+        charger = mobileDeviceDetails.charger//,  充电电源
+        battery_status = mobileDeviceDetails.battery_status//,  电池状态
+        other_battery = mobileDeviceDetails.other_battery//,  其他属性
 
         //          WLAN MAC:
         var mac = if (getMac(application) != null) {
