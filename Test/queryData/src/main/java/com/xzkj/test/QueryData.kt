@@ -549,7 +549,15 @@ class QueryData(var activity: Activity, var application: Context) : Handler.Call
         charger = mobileDeviceDetails.charger//,  充电电源
         battery_status = mobileDeviceDetails.battery_status//,  电池状态
         other_battery = mobileDeviceDetails.other_battery//,  其他属性
-
+        val mobileData = getMobileData()
+        mobileData?.current = current
+        mobileData?.battery_health = battery_health
+        mobileData?.max_current = max_current
+        mobileData?.charger = charger
+        mobileData?.battery_status = battery_status
+        mobileData?.voltage = other_battery.voltage
+        mobileData?.techPronology = other_battery.techPronology
+        mobileData?.temperaProture = other_battery.temperaProture
         return false
     }
 }
