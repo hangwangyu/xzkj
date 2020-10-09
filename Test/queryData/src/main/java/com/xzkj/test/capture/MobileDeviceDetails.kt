@@ -130,7 +130,7 @@ class MobileDeviceDetails(var context: Context?) {
             }
             unRegistBattery()
             if (mHandler != null) {
-                mHandler?.sendEmptyMessageDelayed(1,  1000)
+                mHandler?.sendEmptyMessage(1)
             }
         }
 

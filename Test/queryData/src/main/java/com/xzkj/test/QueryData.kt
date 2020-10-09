@@ -38,18 +38,12 @@ class QueryData(var activity: Activity, var application: Context) : Handler.Call
         isset = true
         mobileDeviceDetails.registBattery(handler)
 
-        setCurrentListenners(object :getCurrentListenner{
-            override fun current_results() {
-
-                current = mobileDeviceDetails.current  //电池电量
-                battery_health = mobileDeviceDetails.battery_health//,电池健康状态
-                max_current = mobileDeviceDetails.max_current//, 最大电量
-                charger = mobileDeviceDetails.charger//,  充电电源
-                battery_status = mobileDeviceDetails.battery_status//,  电池状态
-                other_battery = mobileDeviceDetails.other_battery//,  其他属性
-            }
-
-        })
+        var current = ""
+        var max_current = ""
+        var battery_health = ""
+        var battery_status = ""
+        var other_battery = OtherData()
+        var charger = ""
 
         Thread {
             hostIP = if (GetIpAdressUtils.getHostIP() != null) {
@@ -208,6 +202,19 @@ class QueryData(var activity: Activity, var application: Context) : Handler.Call
         } else {
             locale = application.getResources().getConfiguration().locale;
         }
+
+        setCurrentListenners(object :getCurrentListenner{
+            override fun current_results() {
+
+                current = mobileDeviceDetails.current  //电池电量
+                battery_health = mobileDeviceDetails.battery_health//,电池健康状态
+                max_current = mobileDeviceDetails.max_current//, 最大电量
+                charger = mobileDeviceDetails.charger//,  充电电源
+                battery_status = mobileDeviceDetails.battery_status//,  电池状态
+                other_battery = mobileDeviceDetails.other_battery//,  其他属性
+            }
+
+        })
 
         /**
          * 手机设备信息存储
@@ -546,12 +553,6 @@ class QueryData(var activity: Activity, var application: Context) : Handler.Call
         return mac
     }
 
-    var current = ""
-    var max_current = ""
-    var battery_health = ""
-    var battery_status = ""
-    var other_battery = OtherData()
-    var charger = ""
 
     override fun handleMessage(msg: Message): Boolean {
 
