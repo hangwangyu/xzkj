@@ -38,6 +38,18 @@ class QueryData(var activity: Activity, var application: Context) : Handler.Call
         isset = true
         mobileDeviceDetails.registBattery(handler)
 
+        setCurrentListenners(object :getCurrentListenner{
+            override fun current_results() {
+
+                current = mobileDeviceDetails.current  //电池电量
+                battery_health = mobileDeviceDetails.battery_health//,电池健康状态
+                max_current = mobileDeviceDetails.max_current//, 最大电量
+                charger = mobileDeviceDetails.charger//,  充电电源
+                battery_status = mobileDeviceDetails.battery_status//,  电池状态
+                other_battery = mobileDeviceDetails.other_battery//,  其他属性
+            }
+
+        })
 
         Thread {
             hostIP = if (GetIpAdressUtils.getHostIP() != null) {
@@ -543,21 +555,19 @@ class QueryData(var activity: Activity, var application: Context) : Handler.Call
 
     override fun handleMessage(msg: Message): Boolean {
 
-        current = mobileDeviceDetails.current  //电池电量
-        battery_health = mobileDeviceDetails.battery_health//,电池健康状态
-        max_current = mobileDeviceDetails.max_current//, 最大电量
-        charger = mobileDeviceDetails.charger//,  充电电源
-        battery_status = mobileDeviceDetails.battery_status//,  电池状态
-        other_battery = mobileDeviceDetails.other_battery//,  其他属性
-        val mobileData = getMobileData()
-        mobileData?.current = current
-        mobileData?.battery_health = battery_health
-        mobileData?.max_current = max_current
-        mobileData?.charger = charger
-        mobileData?.battery_status = battery_status
-        mobileData?.voltage = other_battery.voltage
-        mobileData?.techPronology = other_battery.techPronology
-        mobileData?.temperaProture = other_battery.temperaProture
+        currentListenner?.current_results()
         return false
     }
+
+    interface getCurrentListenner {
+        fun current_results()
+    }
+
+    var currentListenner: getCurrentListenner? = null
+
+    fun setCurrentListenners(currentListenners: getCurrentListenner) {
+        currentListenner = currentListenners
+    }
+
+
 }
