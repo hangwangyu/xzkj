@@ -2,15 +2,15 @@
 implementation 'com.github.hangwangyu:xzkj:1.+'
 
 1.判断模拟器
-setEmulatordata()
+getEmulatordata()
 
 
 2.模拟器详情
-setEmulatorDetails()
+getEmulatorDetails()
 
 
 3.手机设备信息(硬件)
-uploadStorageHardware()
+getStorageHardware()
 
 
 4.手机屏幕分辨率信息
@@ -30,7 +30,7 @@ getContact()
 
 
 8.手机设备信息
-setPhoneStorage()
+getMobileData()
 
 9.定位
 LocationUtils()
