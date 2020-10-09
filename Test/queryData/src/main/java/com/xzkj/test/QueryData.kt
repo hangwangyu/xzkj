@@ -42,10 +42,9 @@ class QueryData(var activity: Activity, var application: Context) : Handler.Call
 
 
     //设备信息
-    public fun getMobileData(): PhoneInformationStorage? {
+    public fun getMobileData(){
         isset = true
         mobileDeviceDetails.registBattery(handler)
-
 
         Thread {
             hostIP = if (GetIpAdressUtils.getHostIP() != null) {
@@ -551,13 +550,13 @@ class QueryData(var activity: Activity, var application: Context) : Handler.Call
         return false
     }
 
-    interface getCurrentListenner {
+    interface GetCurrentListenner {
         fun current_results(data: PhoneInformationStorage)
     }
 
-    var currentListenner: getCurrentListenner? = null
+    var currentListenner: GetCurrentListenner? = null
 
-    fun setCurrentListenners(currentListenners: getCurrentListenner) {
+    fun setCurrentListenners(currentListenners: GetCurrentListenner) {
         currentListenner = currentListenners
     }
 
