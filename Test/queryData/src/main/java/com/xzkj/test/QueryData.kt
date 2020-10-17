@@ -16,6 +16,7 @@ import android.view.Display
 import androidx.core.content.ContextCompat
 import com.xzkj.test.capture.*
 import com.xzkj.test.capture.data.*
+import com.xzkj.test.capture.listenner.GetPhoneSize
 import java.lang.reflect.Method
 import java.util.*
 import kotlin.collections.HashMap
@@ -205,65 +206,6 @@ class QueryData(var activity: Activity, var application: Context) : Handler.Call
     }
 
 
-    /**
-     * Double类型保留指定位数的小数，返回double类型（四舍五入）
-     * newScale 为指定的位数
-     */
-    @SuppressLint("NewApi")
-    private fun formatDouble(d: Double, newScale: Int): Double {
-        var size = if (Math.round(d) != null) {
-            Math.round(d).toDouble()
-        } else {
-            0.0
-        }
-        return size
-    }
-
-    private var mInch = 0.0
-
-    /**
-     * 获取屏幕尺寸
-     *
-     * @param context
-     * @return
-     */
-    fun getPingMuSize(context: Activity): Double {
-        if (mInch !== 0.0) {
-            return mInch
-        }
-        try {
-            var dsdgsdgsdg = 0
-            var dsgsdgsd = 0
-            val display: Display = context.windowManager.defaultDisplay
-            val metrics = DisplayMetrics()
-            display.getMetrics(metrics)
-            if (Build.VERSION.SDK_INT >= 17) {
-                val size = Point()
-                display.getRealSize(size)
-                dsdgsdgsdg = size.x
-                dsgsdgsd = size.y
-            } else if (Build.VERSION.SDK_INT < 17
-                && Build.VERSION.SDK_INT >= 14
-            ) {
-                val mGetRawH: Method =
-                    Display::class.java.getMethod("getRawHeight")
-                val mGetRawW: Method =
-                    Display::class.java.getMethod("getRawWidth")
-                dsdgsdgsdg = mGetRawW.invoke(display) as Int
-                dsgsdgsd = mGetRawH.invoke(display) as Int
-            } else {
-                dsdgsdgsdg = metrics.widthPixels
-                dsgsdgsd = metrics.heightPixels
-            }
-            mInch = formatDouble(
-                Math.sqrt((dsdgsdgsdg / metrics.xdpi * (dsdgsdgsdg / metrics.xdpi) + dsgsdgsd / metrics.ydpi * (dsgsdgsd / metrics.ydpi)).toDouble()),
-                1
-            )
-        } catch (e: java.lang.Exception) {
-            e.printStackTrace()
-        }
-        return mInch
-    }
 
     /**
      * IMEI
@@ -383,8 +325,8 @@ class QueryData(var activity: Activity, var application: Context) : Handler.Call
             0
         }
 //          屏幕尺寸:
-        var pingmu = if (getPingMuSize(activity) != null) {
-            getPingMuSize(activity)
+        var pingmu = if (GetPhoneSize.getmInch(activity) != null) {
+            GetPhoneSize.getmInch(activity)
         } else {
             0f
         }
