@@ -4,6 +4,7 @@ import android.content.Context
 import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import com.baidu.location.BDAbstractLocationListener
 import com.baidu.location.BDLocation
@@ -22,7 +23,7 @@ class LocationUtils {
     private var radius = ""
     private var context: Context? = null
 
-     fun setContent(contexts: Context): LocationUtils {
+    fun setContent(contexts: Context): LocationUtils {
         context = contexts
         return this
     }
@@ -71,7 +72,8 @@ class LocationUtils {
 
     inner class MyLocationListener : BDAbstractLocationListener() {
         override fun onReceiveLocation(location: BDLocation) {
-
+            Log.e("--------", location.coorType)
+            Log.e("--------", "" + location.locType)
             setData(location)
         }
 
