@@ -70,7 +70,9 @@ class LocationUtils {
         return this
     }
 
+
     inner class MyLocationListener : BDAbstractLocationListener() {
+
         override fun onReceiveLocation(location: BDLocation) {
             Log.e("--------", location.coorType)
             Log.e("--------", "" + location.locType)
@@ -81,6 +83,7 @@ class LocationUtils {
             super.onLocDiagnosticMessage(i, i1, s)
             initLocation()
         }
+
 
         private fun setData(location: BDLocation) {
 
@@ -180,7 +183,6 @@ class LocationUtils {
                 mLocationClient!!.stop()
             }
         }
-
     }
 
     fun initLocation() {
